@@ -1,0 +1,163 @@
+<!--
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- Primary Meta Tags -->
+<title>
+    龍骨王 - Presentation | LongGood    
+</title>
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Sweet Alert -->
+<link type="text/css" href="/static/assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- Notyf -->
+<link type="text/css" href="/static/assets/vendor/notyf/notyf.min.css" rel="stylesheet">
+
+<!-- Volt CSS -->
+<link type="text/css" href="/static/assets/css/volt.css" rel="stylesheet">
+
+<!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
+
+</head>
+<body>
+
+
+
+
+    <header class="header-global">
+
+
+        <nav id="navbar-main" aria-label="Primary navigation" class="navbar navbar-main navbar-expand-lg navbar-theme-primary pt-4 navbar-dark">
+            <div class="container position-relative">
+                <div class="navbar-collapse collapse me-auto" id="navbar_global">
+				
+				
+
+                    <div class="navbar-collapse-header">
+                        <div class="row">
+                            <div class="col-6 collapse-brand">
+                                <a href="/">
+                                    <img src="/static/assets/img/brand/light.svg" alt="Volt logo">
+                                </a>
+                            </div>
+                            <div class="col-6 collapse-close">
+                                <a href="#navbar_global" class="fas fa-times" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" title="close" aria-label="Toggle navigation"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center ms-auto">
+
+                    <button class="navbar-toggler ml-2" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>                    
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Hero -->
+        <section class="section-header overflow-hidden pt-7 pt-lg-8 pb-9 pb-lg-12 bg-primary text-white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+
+						
+              
+                        <h1 class="fw-bolder">工研院機械所</h1>
+                        <h2 class="lead fw-normal text-muted mb-5">
+                            下肢復健機器人計畫
+                        </h2>						
+							<div class="card border-0 shadow mb-4">
+								  <div class="card-body">
+									  <div class="table-responsive">
+										  <table class="table table-centered table-nowrap mb-0 rounded">
+											  <thead class="thead-light">
+												  <tr>
+													  <th class="border-0 rounded-start">#</th>
+													  <th class="border-0">json</th>
+													  <th class="border-0">raw</th>
+													  <th class="border-0">score</th>
+													  <th class="border-0">-</th>
+														<th class="border-0">-</th>
+													  <th class="border-0 rounded-end">-</th>
+												  </tr>
+											  </thead>
+											  <tbody>
+												  <!-- Item 開始-->
+												  {% for data in data_list %}
+												  <tr>
+													  <td><a href="#" class="text-primary fw-bold">{{ data.uid }}</a> </td>
+													  <td class="fw-bold d-flex align-items-center">
+														  <svg class="icon icon-xxs text-gray-500 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"></path></svg>
+														  <a href="{{ url_for('report_blueprint.download_file', filename=data.json_file) }}" class="text-primary fw-bold">下載json</a>
+													  </td>
+													  <td><a href="{{ url_for('report_blueprint.download_file', filename=data.raw_file) }}" class="text-primary fw-bold">下載raw</a></td>
+													  <td class="text-success">
+														  <div class="d-flex align-items-center">
+															  <span class="fw-bold">{{"%.2f" |format(data.score) }}</span>
+														  </div> 
+													  </td>
+													  <td>-</td>
+													  <td>-</td>
+													  <td>-</td>
+													  
+												  </tr>
+												  {% endfor %}
+												  <!-- End of Item -->
+											  </tbody>
+										  </table>
+									  </div>
+								  </div>
+							  </div>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+                        <!-- Button Modal -->
+                        <div class="d-flex align-items-center justify-content-center mb-5">
+                            <a href="/dashboard.html" class="btn btn-secondary d-inline-flex align-items-center me-4">
+                                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11 4a1 1 0 10-2 0v4a1 1 0 102 0V7zm-3 1a1 1 0 10-2 0v3a1 1 0 102 0V8zM8 9a1 1 0 00-2 0v2a1 1 0 102 0V9z" clip-rule="evenodd"></path></svg>
+                                
+                            </a>                            
+                        </div>
+                        <div class="d-flex justify-content-center flex-column mb-6 mb-lg-5">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <figure class="position-absolute bottom-0 left-0 w-100 d-none d-md-block mb-n2"><svg class="home-pattern" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 185.4"><path d="M3000,0v185.4H0V0c496.4,115.6,996.4,173.4,1500,173.4S2503.6,115.6,3000,0z"></path></svg></figure>       
+        </section>
+        
+
+    </main>
+
+  
+
+    {% include 'includes/scripts.html' %}
+
+</body>
+</html>
