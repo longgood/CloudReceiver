@@ -24,8 +24,8 @@ def process_data(json_data,token):
     # 解析 JSON 資料
     
     try:如果他就是一個dict
-        token=data["Token"]
-        print("真Dict:",token)
+        tok=json_data["Token"]
+        print("真Dict:",tok)
     except:
         print("no dict")
         pass
