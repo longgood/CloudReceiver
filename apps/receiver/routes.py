@@ -22,32 +22,11 @@ def get_gait():
     return process_data(json_data,token)
 def process_data(json_data,token):
     # 解析 JSON 資料
-    
-    try:#如果他就是一個dict
-        tok=json_data["Token"]
-        print("真Dict:",tok)
-    except:
-        print("no dict")
-        pass
-        
-        
-        
     try:
         data    =json.dumps(json_data)
-        print("dumps, type:",type(data))
-        print("content:",data)
         data = json.loads(data)
-        print("type:",type(data))
     except:
         print("--failt to dump")
-        pass
-        
-        
-    try:
-        data    =json.loads(json_data)
-        print("loads, type:",type(data))
-    except:
-        print("--fail to load")
         pass
     # 檢查 Token 是否正確
     response = {"success":"false", "message":"Invalid token"}
