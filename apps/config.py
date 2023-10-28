@@ -36,11 +36,8 @@ class ProductionConfig(Config):
         config('DB_NAME', default='appseed-flask')
     )
 
-
 class DebugConfig(Config):
     DEBUG = True
-
-
 # Load all possible configurations
 config_dict = {
     'Production': ProductionConfig,

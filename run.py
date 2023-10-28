@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present AppSeed.us
 """
 
 from flask_migrate import Migrate
@@ -33,4 +32,4 @@ if DEBUG:
     app.logger.info('DBMS        = ' + app_config.SQLALCHEMY_DATABASE_URI)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, host="0.0.0.0",port=80)
