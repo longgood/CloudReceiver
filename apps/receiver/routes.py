@@ -23,12 +23,15 @@ def get_gait():
 def process_data(json_data,token):
     # 解析 JSON 資料
     
-    try:如果他就是一個dict
+    try:#如果他就是一個dict
         tok=json_data["Token"]
         print("真Dict:",tok)
     except:
         print("no dict")
         pass
+        
+        
+        
     try:
         data    =json.dumps(json_data)
         print("dumps, type:",type(data))
@@ -38,6 +41,8 @@ def process_data(json_data,token):
     except:
         print("--failt to dump")
         pass
+        
+        
     try:
         data    =json.loads(json_data)
         print("loads, type:",type(data))
