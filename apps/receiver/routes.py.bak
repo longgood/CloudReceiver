@@ -33,7 +33,6 @@ def process_data(json_data,token):
         pass
     # 檢查 Token 是否正確
     try:
-        data=json.loads(data)
         print("--ok:",type(json.loads(data)))
     except:
         print("--fail in access")
