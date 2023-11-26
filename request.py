@@ -1,7 +1,7 @@
 import requests
 import json
 url='http://52.197.148.115/get_gait'
-url="http://localhost/get_gait"
+#url="http://localhost/get_gait"
 def post_json(score=0.80):
     json_data={
         "Token": "Ac69b674cCxj/6ej3j;6DCc623e2A",
@@ -27,6 +27,7 @@ def post_json(score=0.80):
         }
     }
     json_data=json.dumps(json_data)
+    print("URL:",url)
     
     print("jsondata:",type(json_data),",",json_data)
     r = requests.post(url, json=json_data)

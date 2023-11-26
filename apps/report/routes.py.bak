@@ -32,6 +32,7 @@ def api_json():
 		return "error"
 	result=data.get_report_json()
 	
+	print("result\n",result)
 	return result
 
 """
