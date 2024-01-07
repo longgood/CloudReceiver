@@ -15,6 +15,9 @@ def index():
 
     return render_template('home/index.html', segment='index')
 
+@blueprint.route('/mediapipe')
+def mediapipe():
+    return render_template('home/mediapipe.html', segment='index')
 
 @blueprint.route('/<template>')
 @login_required
