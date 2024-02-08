@@ -8,24 +8,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { ObjectDetector, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2";
+import { FaceDetector, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
 const demosSection = document.getElementById("demos");
-let objectDetector;
+let faceDetector;
 let runningMode = "IMAGE";
 // Initialize the object detector
-const initializeObjectDetector = async () => {
-    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2/wasm");
-    objectDetector = await ObjectDetector.createFromOptions(vision, {
+const initializefaceDetector = async () => {
+    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+    faceDetector = await FaceDetector.createFromOptions(vision, {
         baseOptions: {
-            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/1/efficientdet_lite0.tflite`,
+            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite`,
             delegate: "GPU"
         },
-        scoreThreshold: 0.5,
         runningMode: runningMode
     });
     demosSection.classList.remove("invisible");
 };
-initializeObjectDetector();
+initializefaceDetector();
 /********************************************************************
  // Demo 1: Grab a bunch of images from the page and detection them
  // upon click.
@@ -35,7 +34,7 @@ for (let imageContainer of imageContainers) {
     imageContainer.children[0].addEventListener("click", handleClick);
 }
 /**
- * Detect objects in still images on click
+ * Detect faces in still images on click
  */
 async function handleClick(event) {
     const highlighters = event.target.parentNode.getElementsByClassName("highlighter");
@@ -46,32 +45,36 @@ async function handleClick(event) {
     while (infos[0]) {
         infos[0].parentNode.removeChild(infos[0]);
     }
-    if (!objectDetector) {
-        alert("Object Detector is still loading. Please try again.");
+    const keyPoints = event.target.parentNode.getElementsByClassName("key-point");
+    while (keyPoints[0]) {
+        keyPoints[0].parentNode.removeChild(keyPoints[0]);
+    }
+    if (!faceDetector) {
+        console.log("Wait for objectDetector to load before clicking");
         return;
     }
     // if video mode is initialized, set runningMode to image
     if (runningMode === "VIDEO") {
         runningMode = "IMAGE";
-        await objectDetector.setOptions({ runningMode: "IMAGE" });
+        await faceDetector.setOptions({ runningMode: "IMAGE" });
     }
     const ratio = event.target.height / event.target.naturalHeight;
-    // objectDetector.detect returns a promise which, when resolved, is an array of Detection objects
-    const detections = objectDetector.detect(event.target);
+    // faceDetector.detect returns a promise which, when resolved, is an array of Detection faces
+    const detections = faceDetector.detect(event.target).detections;
+    console.log(detections);
     displayImageDetections(detections, event.target);
 }
-function displayImageDetections(result, resultElement) {
+function displayImageDetections(detections, resultElement) {
     const ratio = resultElement.height / resultElement.naturalHeight;
     console.log(ratio);
-    for (let detection of result.detections) {
+    for (let detection of detections) {
         // Description text
         const p = document.createElement("p");
         p.setAttribute("class", "info");
         p.innerText =
-            detection.categories[0].categoryName +
-                " - with " +
+            "Confidence: " +
                 Math.round(parseFloat(detection.categories[0].score) * 100) +
-                "% confidence.";
+                "% .";
         // Positioned at the top left of the bounding box.
         // Height is whatever the text takes up.
         // Width subtracts text padding in CSS so fits perfectly.
@@ -80,10 +83,13 @@ function displayImageDetections(result, resultElement) {
                 detection.boundingBox.originX * ratio +
                 "px;" +
                 "top: " +
-                detection.boundingBox.originY * ratio +
+                (detection.boundingBox.originY * ratio - 30) +
                 "px; " +
                 "width: " +
                 (detection.boundingBox.width * ratio - 10) +
+                "px;" +
+                "hight: " +
+                20 +
                 "px;";
         const highlighter = document.createElement("div");
         highlighter.setAttribute("class", "highlighter");
@@ -102,6 +108,13 @@ function displayImageDetections(result, resultElement) {
                 "px;";
         resultElement.parentNode.appendChild(highlighter);
         resultElement.parentNode.appendChild(p);
+        for (let keypoint of detection.keypoints) {
+            const keypointEl = document.createElement("spam");
+            keypointEl.className = "key-point";
+            keypointEl.style.top = `${keypoint.y * resultElement.height - 3}px`;
+            keypointEl.style.left = `${keypoint.x * resultElement.width - 3}px`;
+            resultElement.parentNode.appendChild(keypointEl);
+        }
     }
 }
 /********************************************************************
@@ -111,9 +124,7 @@ let video = document.getElementById("webcam");
 const liveView = document.getElementById("liveView");
 let enableWebcamButton;
 // Check if webcam access is supported.
-function hasGetUserMedia() {
-    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-}
+const hasGetUserMedia = () => { var _a; return !!((_a = navigator.mediaDevices) === null || _a === void 0 ? void 0 : _a.getUserMedia); };
 // Keep a reference of all the child elements we create
 // so we can remove them easilly on each render.
 var children = [];
@@ -128,8 +139,8 @@ else {
 }
 // Enable the live webcam view and start detection.
 async function enableCam(event) {
-    if (!objectDetector) {
-        console.log("Wait! objectDetector not loaded yet.");
+    if (!faceDetector) {
+        alert("Face Detector is still loading. Please try again..");
         return;
     }
     // Hide the button.
@@ -147,40 +158,39 @@ async function enableCam(event) {
     })
         .catch((err) => {
         console.error(err);
-        /* handle the error */
     });
 }
 let lastVideoTime = -1;
 async function predictWebcam() {
-    // if image mode is initialized, create a new classifier with video runningMode.
+    // if image mode is initialized, create a new classifier with video runningMode
     if (runningMode === "IMAGE") {
         runningMode = "VIDEO";
-        await objectDetector.setOptions({ runningMode: "VIDEO" });
+        await faceDetector.setOptions({ runningMode: "VIDEO" });
     }
     let startTimeMs = performance.now();
-    // Detect objects using detectForVideo.
+    // Detect faces using detectForVideo
     if (video.currentTime !== lastVideoTime) {
         lastVideoTime = video.currentTime;
-        const detections = objectDetector.detectForVideo(video, startTimeMs);
+        const detections = faceDetector.detectForVideo(video, startTimeMs)
+            .detections;
         displayVideoDetections(detections);
     }
-    // Call this function again to keep predicting when the browser is ready.
+    // Call this function again to keep predicting when the browser is ready
     window.requestAnimationFrame(predictWebcam);
 }
-function displayVideoDetections(result) {
+function displayVideoDetections(detections) {
     // Remove any highlighting from previous frame.
     for (let child of children) {
         liveView.removeChild(child);
     }
     children.splice(0);
     // Iterate through predictions and draw them to the live view
-    for (let detection of result.detections) {
+    for (let detection of detections) {
         const p = document.createElement("p");
         p.innerText =
-            detection.categories[0].categoryName +
-                " - with " +
+            "Confidence: " +
                 Math.round(parseFloat(detection.categories[0].score) * 100) +
-                "% confidence.";
+                "% .";
         p.style =
             "left: " +
                 (video.offsetWidth -
@@ -188,7 +198,7 @@ function displayVideoDetections(result) {
                     detection.boundingBox.originX) +
                 "px;" +
                 "top: " +
-                detection.boundingBox.originY +
+                (detection.boundingBox.originY - 30) +
                 "px; " +
                 "width: " +
                 (detection.boundingBox.width - 10) +
@@ -212,8 +222,16 @@ function displayVideoDetections(result) {
                 "px;";
         liveView.appendChild(highlighter);
         liveView.appendChild(p);
-        // Store drawn objects in memory so they are queued to delete at next call.
+        // Store drawn objects in memory so they are queued to delete at next call
         children.push(highlighter);
         children.push(p);
+        for (let keypoint of detection.keypoints) {
+            const keypointEl = document.createElement("spam");
+            keypointEl.className = "key-point";
+            keypointEl.style.top = `${keypoint.y * video.offsetHeight - 3}px`;
+            keypointEl.style.left = `${video.offsetWidth - keypoint.x * video.offsetWidth - 3}px`;
+            liveView.appendChild(keypointEl);
+            children.push(keypointEl);
+        }
     }
 }

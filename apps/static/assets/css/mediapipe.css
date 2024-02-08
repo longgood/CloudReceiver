@@ -100,3 +100,13 @@ section {
 .detectOnClick img {
   width: 100%;
 }
+.key-point {
+  position: absolute;
+  z-index: 1;
+  width: 3px;
+  height: 3px;
+  background-color: #ff0000;
+  /* border: 1px solid #ffffff; */
+  border-radius: 50%;
+  display: block;
+}
